@@ -6,8 +6,12 @@
 	</head>
 	<body>
 
-		<div id="container"> 
-			Boilerplate view injected here...
+		<div id="singleItemView"> 
+			Boilerplate single item injected here...
+		</div>
+
+		<div id="listItemView">
+			Boilerplate list injectected here....
 		</div>
 
 		<!-- functional library -->
@@ -19,9 +23,21 @@
 		<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 		<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
 
-		<!-- boilerplate template -->
+		<!-- boilerplate element template -->
 		<script type="text/template" id="boilerplate-template">
-			Boilerplate template with custom data:<em> <%= attr1 %></em> and <em><%= attr2 %></em>
+				Boilerplate template with custom data:<em> <%= attr1 %></em> and <em><%= attr2 %></em>		
+		</script>
+
+		<!-- boilerplate list template -->
+		
+		<script type="text/template" id="boilerplate-list-template">
+    		<ul>
+    			<% _.each(items, function(item) { %>
+    				<li>item:<em><%=item.attr1%> - </em><em><%=item.attr2%></em>
+    				</li>
+        		<%});
+        		%>
+    		</ul >
 		</script>
 
 		<!-- application code -->
@@ -63,12 +79,16 @@
 					}
 			});
 
+
+
+
+			
 			/*
 			boilerplate view
 			*/
-			var BoilerPlateView = Backbone.View.extend({
+			var BoilerPlateSingleView = Backbone.View.extend({
 
-			  el:  '#container',
+			  el:  '#singleItemView',
 
 			  // Cache the template function
 			  boilerplateTplMarkup: $('#boilerplate-template').html(),
@@ -80,7 +100,10 @@
 			  // Rerender the titles of the todo item.
 			  render: function() {
 			    compiledBoilerplateTpl =  _.template(this.boilerplateTplMarkup, this.model.toJSON());
+			 
 			    this.$el.html( compiledBoilerplateTpl );
+			    console.log(this.$el.html());
+
 			    return this;
 			  },
 
@@ -91,13 +114,32 @@
 
 
 
+			/*
+			Boilerplate List View
+			*/
+			var BoilerPlateListView = Backbone.View.extend({
+				el:"#listItemView",
+				template:_.template($('#boilerplate-list-template').html()),
+				render: function(){
+					 this.$el.html(this.template({ items: this.collection.toJSON() }));
+					 return this;
+				}
+
+			});
+
+
 			//application code 
 
-			//Step 1a: instantiate model supplying boilerplate content
+			//Step 1a: instantiate models supplying boilerplate content
 			var bp1 = new BoilerPlateModel({
-			  attr1: 'boilerplate attribute 1',
-			  attr2: 'boilerplate attribute 2'
+			  attr1: 'boilerplate model 1 attribute 1',
+			  attr2: 'boilerplate model 1 attribute 2',
 			});
+
+			var bp2 = new BoilerPlateModel({
+			  attr1: 'boilerplate model 2 attribute 1',
+			  attr2: 'boilerplate model 2attribute 2',
+			}); 
 			
 
 			//Step 1b: play arround with model attribute setters/unsetters
@@ -108,10 +150,21 @@
 			console.log(bp1.get('attr1'));
 			console.log(bp1.toJSON());
 
+			//Step 2: Create a collection of the boilderplate models
+			var BoilerPlateCollection = Backbone.Collection.extend({
+  				model: BoilerPlateModel
+			});
+
+			var bpListCollection = new BoilerPlateCollection([bp1,bp2]);
+
+
 			//Step 2: instantiate a view and pass it the model instance instantiated in step 1a
-			var bpView = new BoilerPlateView({model:bp1});
-			bpView.render();
-			console.log(bpView.el); // logs <li></li>
+			var bpSingleItemView = new BoilerPlateSingleView({model:bp1});
+			bpSingleItemView.render();
+			console.log(bpSingleItemView.el); // logs <li></li>
+
+			var bpListView = new BoilerPlateListView({collection:bpListCollection});
+			bpListView.render();
 
 			console.log("");
 
