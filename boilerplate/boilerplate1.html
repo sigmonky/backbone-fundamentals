@@ -6,6 +6,16 @@
 	</head>
 	<body>
 
+		<div class="menu navbar">
+		    <div class="navbar-inner">
+		      <ul class="nav">
+		        <li><a href="#" >Home</a></li>
+		        <li ><a href="#/single" >Single</a></li>
+		        <li><a href="#/list">List</a></li>
+		      </ul>
+		    </div>
+		</div>
+
 		<div id="singleItemView"> 
 			Boilerplate single item injected here...
 		</div>
@@ -129,6 +139,31 @@
 
 
 			//application code 
+
+			var AppRouter = Backbone.Router.extend({
+		        routes: {
+		        	"list": "showList",
+		        	"single":"showSingle",
+		            "*actions": "defaultRoute" // matches http://example.com/#anything-here
+		        }
+		    });
+		    // Initiate the router
+		    var app_router = new AppRouter;
+
+		    app_router.on('route:defaultRoute', function(actions) {
+		        console.log("default to show single item");
+		    });
+
+		    app_router.on('route:showSingle', function(actions) {
+		        console.log("show single");
+		    });
+
+		    app_router.on('route:showList', function(actions) {
+		        console.log("show list");
+		    });
+
+		    // Start Backbone history a necessary step for bookmarkable URL's
+		    Backbone.history.start();
 
 			//Step 1a: instantiate models supplying boilerplate content
 			var bp1 = new BoilerPlateModel({
