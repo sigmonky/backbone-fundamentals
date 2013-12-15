@@ -116,6 +116,21 @@
 
 			    return this;
 			  },
+			  destroy_view: function() {
+
+			    //COMPLETELY UNBIND THE VIEW
+			    this.undelegateEvents();
+
+			    this.$el.removeData().unbind(); 
+
+			    this.$el.html("original state restored.....");
+
+			    //Remove view from DOM
+			    //this.remove();  
+			    //Backbone.View.prototype.remove.call(this);
+
+
+			    },
 
 			  bpEventHandlerMethod: function(e) {
 			    console.log("boilerplate event handler method activated");
@@ -133,7 +148,21 @@
 				render: function(){
 					 this.$el.html(this.template({ items: this.collection.toJSON() }));
 					 return this;
-				}
+				},
+				destroy_view: function() {
+
+			    //COMPLETELY UNBIND THE VIEW
+			    this.undelegateEvents();
+
+			    this.$el.removeData().unbind(); 
+
+			    this.$el.html("original state restored");
+
+			    //Remove view from DOM
+			    //this.remove();  
+			    //Backbone.View.prototype.remove.call(this);
+
+			    }
 
 			});
 
@@ -151,15 +180,24 @@
 		    var app_router = new AppRouter;
 
 		    app_router.on('route:defaultRoute', function(actions) {
-		        console.log("default to show single item");
+		    	if (bpSingleItemView && bpListView) {
+		    		bpSingleItemView.destroy_view();
+		        	bpListView.destroy_view();
+		    	}
+		        
 		    });
 
 		    app_router.on('route:showSingle', function(actions) {
 		        console.log("show single");
+		        
+				bpSingleItemView.render();
+				console.log(bpSingleItemView.el); // logs <li></li>
 		    });
 
 		    app_router.on('route:showList', function(actions) {
 		        console.log("show list");
+		        
+				bpListView.render();
 		    });
 
 		    // Start Backbone history a necessary step for bookmarkable URL's
@@ -195,11 +233,9 @@
 
 			//Step 2: instantiate a view and pass it the model instance instantiated in step 1a
 			var bpSingleItemView = new BoilerPlateSingleView({model:bp1});
-			bpSingleItemView.render();
-			console.log(bpSingleItemView.el); // logs <li></li>
-
 			var bpListView = new BoilerPlateListView({collection:bpListCollection});
-			bpListView.render();
+
+			
 
 			console.log("");
 
