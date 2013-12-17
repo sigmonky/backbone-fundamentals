@@ -24,6 +24,21 @@
 			Boilerplate list injectected here....
 		</div>
 
+		<div id="songs">
+			<a href="http://open.spotify.com/track/57exMMIWTLMmwerkzcxcpu">song link</a>
+			<br/>
+			<a href="spotify:track:57exMMIWTLMmwerkzcxcpu">uri</a>
+			<br/>
+			<iframe src="https://embed.spotify.com/?uri=spotify:track:57exMMIWTLMmwerkzcxcpu" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+			<br/>
+			<iframe width="200" height="50" src="//www.youtube.com/embed/afp_kTaksMg" frameborder="0" allowfullscreen></iframe>
+			<br/>
+			<iframe width="200" height="50" src="//www.youtube.com/embed/rMo5bJzLcCE" frameborder="0" allowfullscreen></iframe>
+			<br/>
+			<iframe width="200" height="50" src="//www.youtube.com/embed/DEiWXz3BkpA" frameborder="0" allowfullscreen></iframe>
+
+		</div>
+
 		<!-- functional library -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<!--
@@ -123,7 +138,7 @@
 
 			    this.$el.removeData().unbind(); 
 
-			    this.$el.html("original state restored.....");
+			    this.$el.html("");
 
 			    //Remove view from DOM
 			    //this.remove();  
@@ -156,7 +171,7 @@
 
 			    this.$el.removeData().unbind(); 
 
-			    this.$el.html("original state restored");
+			    this.$el.html("");
 
 			    //Remove view from DOM
 			    //this.remove();  
@@ -166,6 +181,40 @@
 
 			});
 
+
+			
+
+			//Step 1a: instantiate models supplying boilerplate content
+			var bp1 = new BoilerPlateModel({
+			  attr1: 'boilerplate model 1 attribute 1',
+			  attr2: 'boilerplate model 1 attribute 2',
+			});
+
+			var bp2 = new BoilerPlateModel({
+			  attr1: 'boilerplate model 2 attribute 1',
+			  attr2: 'boilerplate model 2attribute 2',
+			}); 
+			
+
+			//Step 1b: play arround with model attribute setters/unsetters
+			bp1.set({attr2:"reset boilerplate attrib2"})
+			bp1.unset('attr1',{validate: true});
+
+			//Step 1c: play around with model attribute getters
+			console.log(bp1.get('attr1'));
+			console.log(bp1.toJSON());
+
+			//Step 2: Create a collection of the boilderplate models
+			var BoilerPlateCollection = Backbone.Collection.extend({
+  				model: BoilerPlateModel
+			});
+
+			var bpListCollection = new BoilerPlateCollection([bp1,bp2]);
+
+
+			//Step 2: instantiate a view and pass it the model instance instantiated in step 1a
+			var bpSingleItemView = new BoilerPlateSingleView({model:bp1});
+			var bpListView = new BoilerPlateListView({collection:bpListCollection});
 
 			//application code 
 
@@ -202,38 +251,6 @@
 
 		    // Start Backbone history a necessary step for bookmarkable URL's
 		    Backbone.history.start();
-
-			//Step 1a: instantiate models supplying boilerplate content
-			var bp1 = new BoilerPlateModel({
-			  attr1: 'boilerplate model 1 attribute 1',
-			  attr2: 'boilerplate model 1 attribute 2',
-			});
-
-			var bp2 = new BoilerPlateModel({
-			  attr1: 'boilerplate model 2 attribute 1',
-			  attr2: 'boilerplate model 2attribute 2',
-			}); 
-			
-
-			//Step 1b: play arround with model attribute setters/unsetters
-			bp1.set({attr2:"reset boilerplate attrib2"})
-			bp1.unset('attr1',{validate: true});
-
-			//Step 1c: play around with model attribute getters
-			console.log(bp1.get('attr1'));
-			console.log(bp1.toJSON());
-
-			//Step 2: Create a collection of the boilderplate models
-			var BoilerPlateCollection = Backbone.Collection.extend({
-  				model: BoilerPlateModel
-			});
-
-			var bpListCollection = new BoilerPlateCollection([bp1,bp2]);
-
-
-			//Step 2: instantiate a view and pass it the model instance instantiated in step 1a
-			var bpSingleItemView = new BoilerPlateSingleView({model:bp1});
-			var bpListView = new BoilerPlateListView({collection:bpListCollection});
 
 			
 
