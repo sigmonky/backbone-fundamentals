@@ -29,7 +29,8 @@
 			<br/>
 			<a href="spotify:track:57exMMIWTLMmwerkzcxcpu">uri</a>
 			<br/>
-			<iframe src="https://embed.spotify.com/?uri=spotify:track:57exMMIWTLMmwerkzcxcpu" width="200" height="80" frameborder="0" allowtransparency="true"></iframe>
+
+			<!--<iframe src="https://embed.spotify.com/?uri=spotify:track:57exMMIWTLMmwerkzcxcpu" width="200" height="80" frameborder="0" allowtransparency="true"></iframe>-->
 			<br/>
 			<iframe width="200" height="50" src="//www.youtube.com/embed/afp_kTaksMg" frameborder="0" allowfullscreen></iframe>
 			<br/>
@@ -65,8 +66,19 @@
     		</ul >
 		</script>
 
+		<script type="text/template" id="spotifyTrackTemplate">
+			<iframe src="https://embed.spotify.com/?uri=spotify:track:<%=trackURI%>" width="<%=width%>" height="<%=height%>" frameborder="0" allowtransparency="true"><%=trackURI%></iframe>
+		</script>
+
 		<!-- application code -->
 		<script>
+
+			var spotifyTrackMarkup = $("#spotifyTrackTemplate").html();
+			console.log(spotifyTrackMarkup);
+			var compiledSpotifyTrackTpl = _.template(spotifyTrackMarkup, {trackURI:"57exMMIWTLMmwerkzcxcpu",width:"200",height:"80"});
+			console.log(compiledSpotifyTrackTpl)
+			$("#songs").append("<br/>"+compiledSpotifyTrackTpl);
+
 
 			/* 
 				boilerplate model
@@ -125,7 +137,8 @@
 			  // Rerender the titles of the todo item.
 			  render: function() {
 			    compiledBoilerplateTpl =  _.template(this.boilerplateTplMarkup, this.model.toJSON());
-			 
+			 	console.log(this.boilerplateTplMarkup);
+			 	console.log(compiledBoilerplateTpl);
 			    this.$el.html( compiledBoilerplateTpl );
 			    console.log(this.$el.html());
 
@@ -202,6 +215,7 @@
 
 			//Step 1c: play around with model attribute getters
 			console.log(bp1.get('attr1'));
+			console.log("boilerplateModel....");
 			console.log(bp1.toJSON());
 
 			//Step 2: Create a collection of the boilderplate models
