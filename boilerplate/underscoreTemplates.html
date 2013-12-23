@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<meta name="description" content="">
+    	<meta name="author" content="">
+    	<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+	    <title>Title</title>
+	</head>
+	<body>
+		<a href="spotify:track:6wIwngEDWrx2wghA8ZEbW9">Uncle John's Boogie</a>
+		<div id="spotify"></div>
+		<div id="youtube"></div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<!--
+		removes annoying warning on event handling -- http://code.jquery.com/jquery-1.11.0-beta1.js 
+		See: http://stackoverflow.com/questions/20045162/jquery-error-event-returnvalue-is-deprecated-please-use-the-standard-event-pre for details
+		-->
+		<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+		<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+		<script type="text/template" id="iframeTemplate">
+			
+			<% _.each(items, function(item) { %>
+				<div>
+					<iframe src="<%=item.trackURI%>" width="<%=item.width%>" height="<%=item.height%>" frameborder="0" allowtransparency="true"><%=item.trackURI%>
+					frameborder="0" allowfullscreen>
+					</iframe>
+				</div>
+			<%});%>
+			
+			
+		</script>
+		<script type="text/template" id="youTubeTrackTemplate">
+		</script>
+		<script>
+			var songListMarkup = $("#iframeTemplate").html();
+			
+			var spotifyList = {items:[{trackURI:"https://embed.spotify.com/?uri=spotify:track:57exMMIWTLMmwerkzcxcpu",width:"85%",height:"80"},
+			{trackURI:"https://embed.spotify.com/?uri=spotify:track:7rFVoyeEOWLwXN8sLV3PsZ",width:"85%",height:"80"}]};
+
+			var youTubeList = {items:[{trackURI:"http://www.youtube.com/embed/afp_kTaksMg",width:"300",height:"100"},
+			{trackURI:"http://www.youtube.com/embed/rMo5bJzLcCE",width:"300",height:"100"},
+			{trackURI:"http://www.youtube.com/embed/DEiWXz3BkpA",width:"300",height:"100"}
+			]};
+
+			var compiledSpotifyTrackTpl = _.template(songListMarkup, spotifyList);
+			console.log(compiledSpotifyTrackTpl)
+			$("#spotify").append("<br/>"+compiledSpotifyTrackTpl);
+
+			var compiledYouTubeTrackTpl = _.template(songListMarkup, youTubeList);
+			console.log(compiledYouTubeTrackTpl)
+			$("#youtube").append(compiledYouTubeTrackTpl);
+
+
+		</script>
+	</body>
+</html>
+
+<iframe src="https://embed.spotify.com/?uri=spotify:track:7rFVoyeEOWLwXN8sLV3PsZ" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+
+
