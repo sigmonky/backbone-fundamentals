@@ -2,7 +2,7 @@
 <html>
 	<head>
 	    <meta charset="UTF-8">
-	    <title>Title</title>
+	    <title>Backbone Boilerplate Template Version 1.0</title>
 	</head>
 	<body>
 
@@ -24,23 +24,9 @@
 			Boilerplate list injectected here....
 		</div>
 
-		<div id="songs">
-			<a href="http://open.spotify.com/track/57exMMIWTLMmwerkzcxcpu" target="_blank">song link</a>
-			<br/>
-			<a href="spotify:track:57exMMIWTLMmwerkzcxcpu">uri</a>
-			<br/>
+		
 
-			<!--<iframe src="https://embed.spotify.com/?uri=spotify:track:57exMMIWTLMmwerkzcxcpu" width="200" height="80" frameborder="0" allowtransparency="true"></iframe>-->
-			<br/>
-			<iframe width="200" height="50" src="http://www.youtube.com/embed/afp_kTaksMg" frameborder="0" allowfullscreen></iframe>
-			<br/>
-			<iframe width="200" height="50" src="http://www.youtube.com/embed/rMo5bJzLcCE" frameborder="0" allowfullscreen></iframe>
-			<br/>
-			<iframe width="200" height="50" src="http://www.youtube.com/embed/DEiWXz3BkpA" frameborder="0" allowfullscreen></iframe>
-
-		</div>
-
-		<!-- functional library -->
+		<!-- dependencies -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<!--
 		removes annoying warning on event handling -- http://code.jquery.com/jquery-1.11.0-beta1.js 
@@ -49,39 +35,30 @@
 		<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 		<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
 
-		<!-- boilerplate element template -->
+		<!-- underscore templates -->
+
+		<!-- boilerplate single item template -->
 		<script type="text/template" id="boilerplate-template">
 				Boilerplate template with custom data:<em> <%= attr1 %></em> and <em><%= attr2 %></em>		
 		</script>
 
 		<!-- boilerplate list template -->
-		
 		<script type="text/template" id="boilerplate-list-template">
     		<ul>
     			<% _.each(items, function(item) { %>
-    				<li>item:<em><%=item.attr1%> - </em><em><%=item.attr2%></em>
+    				<li>
+    					item:<em><%=item.attr1%> - </em><em><%=item.attr2%></em>
     				</li>
         		<%});
         		%>
     		</ul >
 		</script>
 
-		<script type="text/template" id="spotifyTrackTemplate">
-			<iframe src="https://embed.spotify.com/?uri=spotify:track:<%=trackURI%>" width="<%=width%>" height="<%=height%>" frameborder="0" allowtransparency="true"><%=trackURI%></iframe>
-		</script>
-
 		<!-- application code -->
 		<script>
 
-			var spotifyTrackMarkup = $("#spotifyTrackTemplate").html();
-			console.log(spotifyTrackMarkup);
-			var compiledSpotifyTrackTpl = _.template(spotifyTrackMarkup, {trackURI:"57exMMIWTLMmwerkzcxcpu",width:"200",height:"80"});
-			console.log(compiledSpotifyTrackTpl)
-			$("#songs").append("<br/>"+compiledSpotifyTrackTpl);
-
-
 			/* 
-				boilerplate model
+				Step 1: Define Boilerplate Model
 			*/
 			var BoilerPlateModel = Backbone.Model.extend({
 
@@ -116,13 +93,12 @@
 					}
 			});
 
-
-
-
 			
 			/*
-			boilerplate view
+			Step 2: Define Boilerplate Views
 			*/
+
+			//Step 2a: Boilerplate Single View
 			var BoilerPlateSingleView = Backbone.View.extend({
 
 			  el:  '#singleItemView',
@@ -168,7 +144,7 @@
 
 
 			/*
-			Boilerplate List View
+			Step 2b: Boilerplate List View
 			*/
 			var BoilerPlateListView = Backbone.View.extend({
 				el:"#listItemView",
@@ -179,25 +155,31 @@
 				},
 				destroy_view: function() {
 
-			    //COMPLETELY UNBIND THE VIEW
-			    this.undelegateEvents();
+				    //COMPLETELY UNBIND THE VIEW
+				    this.undelegateEvents();
 
-			    this.$el.removeData().unbind(); 
+				    this.$el.removeData().unbind(); 
 
-			    this.$el.html("");
-
-			    //Remove view from DOM
-			    //this.remove();  
-			    //Backbone.View.prototype.remove.call(this);
+				    this.$el.html("");
 
 			    }
 
 			});
 
 
+			//Step 3: Define Router
+			var AppRouter = Backbone.Router.extend({
+		        routes: {
+		        	"list": "showList",
+		        	"single":"showSingle",
+		            "*actions": "defaultRoute" // matches http://example.com/#anything-here
+		        }
+		    });
+
+
 			
 
-			//Step 1a: instantiate models supplying boilerplate content
+			//Step 4: instantiate model instances 
 			var bp1 = new BoilerPlateModel({
 			  attr1: 'boilerplate model 1 attribute 1',
 			  attr2: 'boilerplate model 1 attribute 2',
@@ -209,16 +191,16 @@
 			}); 
 			
 
-			//Step 1b: play arround with model attribute setters/unsetters
+			//play arround with model attribute setters/unsetters
 			bp1.set({attr2:"reset boilerplate attrib2"})
 			bp1.unset('attr1',{validate: true});
 
-			//Step 1c: play around with model attribute getters
+			//play around with model attribute getters
 			console.log(bp1.get('attr1'));
 			console.log("boilerplateModel....");
 			console.log(bp1.toJSON());
 
-			//Step 2: Create a collection of the boilderplate models
+			//Step 5: Create a collection of the boilderplate model instances
 			var BoilerPlateCollection = Backbone.Collection.extend({
   				model: BoilerPlateModel
 			});
@@ -226,34 +208,39 @@
 			var bpListCollection = new BoilerPlateCollection([bp1,bp2]);
 
 
-			//Step 2: instantiate a view and pass it the model instance instantiated in step 1a
+			//Step 6: instantiate views
+			//Step 6a: instantiate single view and pass model instance
 			var bpSingleItemView = new BoilerPlateSingleView({model:bp1});
+			//Step 5b: instantiate list view and pass collection instance
 			var bpListView = new BoilerPlateListView({collection:bpListCollection});
 
 			//application code 
+			//Step 6: Initiate the router
+			
 
-			var AppRouter = Backbone.Router.extend({
-		        routes: {
-		        	"list": "showList",
-		        	"single":"showSingle",
-		            "*actions": "defaultRoute" // matches http://example.com/#anything-here
-		        }
-		    });
-		    // Initiate the router
+		    //Step 7: instantiate router
 		    var app_router = new AppRouter;
 
 		    app_router.on('route:defaultRoute', function(actions) {
-		    	if (bpSingleItemView && bpListView) {
+		    	if (bpSingleItemView) {
 		    		bpSingleItemView.destroy_view();
-		        	bpListView.destroy_view();
+		        	
 		    	}
 		        
+		        if (bpListView) {
+		        	bpListView.destroy_view();
+		        }
+
 		    });
 
 		    app_router.on('route:showSingle', function(actions) {
 		        console.log("show single");
 		        
 				bpSingleItemView.render();
+				if (bpListView) {
+		        	bpListView.destroy_view();
+		        }
+
 				console.log(bpSingleItemView.el); // logs <li></li>
 		    });
 
@@ -261,9 +248,13 @@
 		        console.log("show list");
 		        
 				bpListView.render();
+				if (bpSingleItemView) {
+		    		bpSingleItemView.destroy_view();
+		        	
+		    	}
 		    });
 
-		    // Start Backbone history a necessary step for bookmarkable URL's
+		    // Step 8: Start Backbone history a necessary step for bookmarkable URL's
 		    Backbone.history.start();
 
 			
